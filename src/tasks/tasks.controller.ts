@@ -9,10 +9,14 @@ import {
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { Prisma } from '@prisma/client';
+import { TasksGateway } from './tasks.gateway';
 
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly tasksService: TasksService) {}
+  constructor(
+    private readonly tasksService: TasksService,
+    private readonly tasksGateway: TasksGateway,
+  ) {}
 
   @Post()
   create(@Body() createTaskDto: Prisma.TaskCreateInput) {
@@ -20,7 +24,8 @@ export class TasksController {
   }
 
   @Get()
-  findAll() {
+  async findAll() {
+    await this.tasksGateway.sendTaskUpdate();
     return this.tasksService.findAll();
   }
 

@@ -28,18 +28,29 @@ services:
     ports:
       - '5672:5672'
       - '15672:15672'
-
   api:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
     container_name: api
     environment:
-      DATABASE_URL: postgresql://user:password@postgres:5432/mydb
+      DATABASE_URL: postgresql://user:password123@postgres:5432/test
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
     ports:
       - "3001:3001"
     depends_on:
       - postgres
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - apps/web/.env
+    depends_on:
+      - api
 
 volumes:
   local_pgdata:

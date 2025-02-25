@@ -29,6 +29,18 @@ services:
       - '5672:5672'
       - '15672:15672'
 
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: api
+    environment:
+      DATABASE_URL: postgresql://user:password@postgres:5432/mydb
+    ports:
+      - "3001:3001"
+    depends_on:
+      - postgres
+
 volumes:
   local_pgdata:
   pgadmin-data:
